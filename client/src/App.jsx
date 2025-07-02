@@ -17,7 +17,7 @@ const App = () => {
   const {token} = useAppContext();
 
   return (
-    <div>
+    <div className='px-6 md:px-8'>
       <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
