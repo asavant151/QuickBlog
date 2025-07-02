@@ -17,7 +17,7 @@ const BlogList = () => {
 
   return (
     <div>
-      <div className="flex justify-normal md:justify-center gap-4 pt-3 sm:gap-8 my-10 relative z-3 overflow-x-auto">
+      <div className="flex justify-normal md:justify-center gap-4 py-3 sm:gap-8 my-10 relative z-3 overflow-x-auto">
         {blogCategories.map((category, index) => (
           <div key={index} className="relative">
             <button
