@@ -66,16 +66,11 @@ const Blog = () => {
     fetchComments();
   }, []);
 
-  const slugify = (str) => {
-    return str
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')   // Remove non-alphanumeric
-      .replace(/\s+/g, '-')           // Replace spaces with -
-      .replace(/-+/g, '-')            // Remove duplicate -
-      .trim();
+  const slugify = (data) => {
+    return data?.title?.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
   };
 
-  const blogSlug = slugify(data.title);
+  const blogSlug = slugify(data);
 
   return data ? (
     <div className="relative">
