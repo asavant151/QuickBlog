@@ -1,5 +1,6 @@
 import React from "react";
 import {assets, footer_data} from "../assets/assets";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -17,8 +18,9 @@ const Footer = () => {
             <h3 className="font-semibold text-base text-gray-900 md:mb-5 mb-2">{section.title}</h3>
             <ul className="text-sm space-y-1">
               {section.links.map((link, i) => (
+                
                 <li key={i}>
-                  <a href={link.url} className="hover:underline transition cursor-pointer">{link}</a>
+                  <Link to={`${section.url[i]}`} className="hover:underline transition cursor-pointer">{link}</Link>
                 </li>
               ))}
             </ul>

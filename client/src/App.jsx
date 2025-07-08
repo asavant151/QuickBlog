@@ -11,6 +11,9 @@ import Login from './components/admin/Login'
 import 'quill/dist/quill.snow.css'
 import {Toaster} from "react-hot-toast";
 import { useAppContext } from './context/AppContext';
+import BestSellers from './pages/BestSellers';
+import ContactPage from './pages/ContactPage';
+import Faqs from './pages/Faqs';
 
 const App = () => {
 
@@ -22,6 +25,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog/:id" element={<Blog />} />
+        <Route path="/bestSellers" element={<BestSellers />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/faqs" element={<Faqs />} />
         <Route path="/admin" element={token ? <Layout /> : <Login />}>
           <Route index element={<Dashboard />} />
           <Route path="listBlog" element={<ListBlog />} />

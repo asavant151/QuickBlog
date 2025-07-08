@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 const Blog = () => {
   const { id } = useParams();
 
-  const {axios} = useAppContext();
+  const { axios } = useAppContext();
 
   const [data, setData] = useState(null);
   const [comments, setComments] = useState([]);
@@ -20,7 +20,7 @@ const Blog = () => {
 
   const fetchBlogData = async () => {
     try {
-      const {data} = await axios.get(`/api/blog/${id}`);
+      const { data } = await axios.get(`/api/blog/${id}`);
       data.success ? setData(data.blog) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -29,12 +29,11 @@ const Blog = () => {
 
   const fetchComments = async () => {
     try {
-      const {data} = await axios.post('/api/blog/comments', {blogId: id})
-      if(data.success) {
+      const { data } = await axios.post("/api/blog/comments", { blogId: id });
+      if (data.success) {
         setComments(data.comments);
-      }
-      else {
-        toast.error(data.message)
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
@@ -44,15 +43,18 @@ const Blog = () => {
   const addComment = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await axios.post('/api/blog/add-comment', {blog: id, name, content});
-      if(data.success) {
+      const { data } = await axios.post("/api/blog/add-comment", {
+        blog: id,
+        name,
+        content,
+      });
+      if (data.success) {
         toast.success(data.message);
         fetchComments();
         setName("");
         setContent("");
-      }
-      else {
-        toast.error(data.message)
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
@@ -63,6 +65,17 @@ const Blog = () => {
     fetchBlogData();
     fetchComments();
   }, []);
+
+  const slugify = (str) => {
+    return str
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')   // Remove non-alphanumeric
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/-+/g, '-')            // Remove duplicate -
+      .trim();
+  };
+
+  const blogSlug = slugify(data.title);
 
   return data ? (
     <div className="relative">
@@ -154,7 +167,11 @@ const Blog = () => {
             Share this article on social media
           </p>
           <div className="flex items-center gap-4">
-            <a href="https://www.facebook.com/" target="_blank">
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(blogSlug)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="cursor-pointer"
                 src={assets.facebook_icon}
@@ -162,7 +179,12 @@ const Blog = () => {
                 alt="facebook"
               />
             </a>
-            <a href="https://twitter.com/" target="_blank">
+
+            <a
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(blogSlug)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="cursor-pointer"
                 src={assets.twitter_icon}
@@ -170,12 +192,17 @@ const Blog = () => {
                 alt="twitter"
               />
             </a>
-            <a href="https://www.google.com/" target="_blank">
+
+            <a
+              href={`https://www.google.com/search?q=${encodeURIComponent(blogSlug)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="cursor-pointer"
                 src={assets.googleplus_icon}
                 width={50}
-                alt="googleplus"
+                alt="google"
               />
             </a>
           </div>
