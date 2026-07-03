@@ -40,6 +40,7 @@ const AddBlog = () => {
            await fetchBlogs(); // Refresh blog list so Home page shows new data
            setImage(false);
            setTitle('');
+           setSubTitle('');
            quillRef.current.root.innerHTML = '';
            setCategory('Startup');
          }
