@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const AddBlog = () => {
 
-  const {axios} = useAppContext();
+  const {axios, fetchBlogs} = useAppContext();
   const [isAdding, setIsAdding] = useState(false);
 
     const editorRef = useRef(null);
@@ -37,6 +37,7 @@ const AddBlog = () => {
          const {data} = await axios.post('/api/blog/add', formData);
          if(data.success) {
            toast.success(data.message);
+           await fetchBlogs(); // Refresh blog list so Home page shows new data
            setImage(false);
            setTitle('');
            quillRef.current.root.innerHTML = '';
@@ -64,6 +65,15 @@ const AddBlog = () => {
 
   return (
     <form onSubmit={onSubmitHandler} className='flex-1 bg-blue-50/50 text-gray-600 h-full overflow-scroll'>
+
+      {/* Full-screen loader overlay during API call */}
+      {isAdding && (
+        <div className='fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm'>
+          <div className='w-12 h-12 rounded-full border-4 border-white border-t-transparent animate-spin'></div>
+          <p className='mt-4 text-white text-sm font-medium tracking-wide'>Uploading blog...</p>
+        </div>
+      )}
+
       <div className='bg-white w-full max-w-3xl md:p-10 sm:m-10 shadow rounded'>
         <p>Upload thumbnail</p>
         <label htmlFor="image">

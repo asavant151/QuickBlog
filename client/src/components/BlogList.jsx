@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { blogCategories } from "../assets/assets";
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
@@ -6,7 +6,12 @@ import { useAppContext } from "../context/AppContext";
 
 const BlogList = () => {
   const [menu, setMenu] = useState("All");
-  const { blogs, input } = useAppContext();
+  const { blogs, input, fetchBlogs } = useAppContext();
+
+  // Fetch latest blogs every time this page is visited
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
 
   const filteredBlogs = () => {
     if (input === "") {

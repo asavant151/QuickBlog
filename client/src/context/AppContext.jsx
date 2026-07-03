@@ -34,7 +34,7 @@ export const AppProvider = ({children}) => {
     }, []);
 
     const value = {
-        axios, navigate, token, setToken, blogs, setBlogs, input, setInput
+        axios, navigate, token, setToken, blogs, setBlogs, input, setInput, fetchBlogs
     }
     return (
         <AppContext.Provider value={value}>
