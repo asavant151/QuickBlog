@@ -19,7 +19,7 @@ const Navbar = () => {
   return (
     <>
       <div className='flex justify-between items-center py-5 sm:mx-20 xl:mx-32'>
-          <img onClick={() => navigate('/')} src={assets.logo} alt="logo" className='w-32 sm:w-44 cursor-pointer' />
+          <img onClick={() => navigate(role === 'admin' ? '/admin' : '/')} src={assets.logo} alt="logo" className='w-32 sm:w-44 cursor-pointer' />
           
           <div className='flex items-center gap-4 sm:gap-6'>
             <Link to="/bookmarks" className='font-medium text-gray-700 hover:text-primary transition-colors'>Bookmarks</Link>
