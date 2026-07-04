@@ -106,7 +106,7 @@ export const getAllBlogs = async (req, res) => {
 
         const query = { isPublished: true };
         if (!req.user) {
-            query.isPrivate = false; // guests only see public blogs
+            query.isPrivate = { $ne: true }; // guests see blogs where isPrivate is false or missing
         }
 
         const totalBlogs = await Blog.countDocuments(query);
