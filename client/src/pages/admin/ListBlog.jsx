@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import BlogTableItem from "../../components/admin/BlogTableItem";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
+import DeleteModal from "../../components/admin/DeleteModal";
 
 const ListBlog = () => {
   const [blogs, setBlogs] = useState([]);
+  const [deleteId, setDeleteId] = useState(null);
   const {axios} = useAppContext();
 
   const fetchBlogs = async () => {
@@ -14,6 +16,21 @@ const ListBlog = () => {
         setBlogs(data.blogs);
       } else {
         toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const deleteBlog = async (id) => {
+    try {
+      const { data } = await axios.post("/api/blog/delete/", { id });
+      if (data.success) {
+        toast.success(data.message);
+        setDeleteId(null);
+        await fetchBlogs();
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
@@ -54,7 +71,7 @@ const ListBlog = () => {
                 <BlogTableItem
                   key={blog._id}
                   blog={blog}
-                  fetchBlogs={fetchBlogs}
+                  onDeleteClick={(id) => setDeleteId(id)}
                   index={index + 1}
                 />
               );
@@ -62,6 +79,13 @@ const ListBlog = () => {
           </tbody>
         </table>
       </div>
+      <DeleteModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => deleteBlog(deleteId)}
+        title="Delete Blog"
+        message="Are you sure you want to delete this blog? This action cannot be undone."
+      />
     </div>
   );
 };

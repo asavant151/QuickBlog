@@ -21,6 +21,9 @@ const AddBlog = () => {
     const onSubmitHandler = async (e) => {
        try {
          e.preventDefault();
+         if (!image) {
+           return toast.error("Image is required");
+         }
          setIsAdding(true);
 
          const blog = {
@@ -79,7 +82,7 @@ const AddBlog = () => {
         <p>Upload thumbnail</p>
         <label htmlFor="image">
            <img src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="upload_area" className='mt-2 h-16 rounded cursor-pointer' />
-           <input type="file" id="image" hidden required onChange={(e) => setImage(e.target.files[0])}/>
+           <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])}/>
         </label>
         <p className='mt-4'>Blog Title</p>
         <input type="text" placeholder='Type here' required className='w-full max-w-lg mt-2 p-2 border border-gray-300 outline-none rounded' value={title} onChange={(e) => setTitle(e.target.value)}/>

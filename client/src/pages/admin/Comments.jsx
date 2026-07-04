@@ -2,16 +2,33 @@ import React, { useEffect, useState } from "react";
 import CommentTableItem from "../../components/admin/CommentTableItem";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
+import DeleteModal from "../../components/admin/DeleteModal";
 
 const Comments = () => {
   const [comments, setComments] = useState([]);
   const [filter, setFilter] = useState("Not Approved");
+  const [deleteId, setDeleteId] = useState(null);
   const { axios } = useAppContext();
 
   const fetchComments = async () => {
     try {
       const { data } = await axios.get("/api/admin/comments");
       data.success ? setComments(data.comments) : toast.error(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const deleteComment = async (id) => {
+    try {
+      const { data } = await axios.post("/api/admin/delete-comment", { id });
+      if (data.success) {
+        toast.success(data.message);
+        setDeleteId(null);
+        await fetchComments();
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       toast.error(error.message);
     }
@@ -71,12 +88,20 @@ const Comments = () => {
                     comment={comment}
                     index={index + 1}
                     fetchComments={fetchComments}
+                    onDeleteClick={(id) => setDeleteId(id)}
                   />
                 );
               })}
           </tbody>
         </table>
       </div>
+      <DeleteModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => deleteComment(deleteId)}
+        title="Delete Comment"
+        message="Are you sure you want to delete this comment? This action cannot be undone."
+      />
     </div>
   );
 };

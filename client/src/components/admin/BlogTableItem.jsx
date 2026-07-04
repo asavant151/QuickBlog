@@ -3,28 +3,10 @@ import { assets } from "../../assets/assets";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
-const BlogTableItem = ({ blog, fetchBlogs, index }) => {
+const BlogTableItem = ({ blog, onDeleteClick, index }) => {
   const { title, createdAt } = blog;
   const BlogDate = new Date(createdAt);
   const { axios } = useAppContext();
-
-  const deleteBlog = async () => {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this blog?"
-    );
-    if (!confirm) return;
-    try {
-      const { data } = await axios.post("/api/blog/delete/", { id: blog._id });
-      if (data.success) {
-        toast.success(data.message);
-        await fetchBlogs();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
 
   const togglePublish = async () => {
     try {
@@ -66,7 +48,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
           src={assets.cross_icon}
           alt="cross_icon"
           className="w-8 hover:scale-110 transition-all cursor-pointer"
-          onClick={deleteBlog}
+          onClick={() => onDeleteClick(blog._id)}
         />
       </td>
     </tr>

@@ -12,7 +12,7 @@ const Footer = () => {
         <p className="max-w-[410px] mt-6">QuickBlog is your go-to platform for sharing your thoughts, ideas, and experiences. Whether you're a writer, blogger, or just someone who likes to express themselves, QuickBlog offers a simple, intuitive interface to create and publish your content. Join us today and start sharing your story!</p>
       </div>
 
-      <div className="flex flex-wrap justify-between w-full md:w-[45%] gap-5">
+      <div className="flex flex-wrap justify-between w-full md:w-[30%] gap-5">
         {footer_data.map((section, index) => (
           <div key={index}>
             <h3 className="font-semibold text-base text-gray-900 md:mb-5 mb-2">{section.title}</h3>

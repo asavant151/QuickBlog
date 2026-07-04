@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -17,12 +19,20 @@ export default function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Thank you for your message! We will get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
+    const loadingToast = toast.loading("Sending message...");
+    try {
+      const { data } = await axios.post("/api/blog/contact", formData);
+      if (data.success) {
+        toast.success(data.message, { id: loadingToast });
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        toast.error(data.message, { id: loadingToast });
+      }
+    } catch (error) {
+      toast.error(error.message, { id: loadingToast });
+    }
   };
 
   return (

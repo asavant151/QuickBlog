@@ -14,6 +14,11 @@ import { useAppContext } from './context/AppContext';
 import BestSellers from './pages/BestSellers';
 import ContactPage from './pages/ContactPage';
 import Faqs from './pages/Faqs';
+import AboutUs from './pages/AboutUs';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import Messages from './pages/admin/Messages';
+import Subscribers from './pages/admin/Subscribers';
 
 const App = () => {
 
@@ -28,11 +33,16 @@ const App = () => {
         <Route path="/bestSellers" element={<BestSellers />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faqs" element={<Faqs />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
         <Route path="/admin" element={token ? <Layout /> : <Login />}>
           <Route index element={<Dashboard />} />
           <Route path="listBlog" element={<ListBlog />} />
           <Route path="addBlog" element={<AddBlog />} />
           <Route path="comments" element={<Comments />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="subscribers" element={<Subscribers />} />
         </Route>
       </Routes>
     </div>

@@ -246,18 +246,17 @@ export const dashboard_data = {
 export const footer_data = [
       {
           title: "Quick Links",
-          links: ["Home", "Best Sellers", "Offers & Deals", "Contact Us", "FAQs"],
-          url: ["/", "/bestSellers", "/", "/contact", "/faqs"]
-          
+          links: ["Home", "About Us", "Contact Us", "FAQs"],
+          url: ["/", "/about", "/contact", "/faqs"]
       },
       {
-          title: "Need Help?",
-          links: ["Delivery Information", "Return & Refund Policy", "Payment Methods", "Track your Order", "Contact Us"],
-          url: ["/", "/", "/", "/", "/contact"]
+          title: "Legal",
+          links: ["Privacy Policy", "Terms of Service"],
+          url: ["/privacy", "/terms"]
       },
       {
           title: "Follow Us",
           links: ["Instagram", "Twitter", "Facebook", "YouTube"],
-          url: ["/", "/", "/", "/"]
+          url: ["https://instagram.com", "https://twitter.com", "https://facebook.com", "https://youtube.com"]
       }
   ];
