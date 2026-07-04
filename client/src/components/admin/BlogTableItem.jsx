@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 const BlogTableItem = ({ blog, onDeleteClick, index }) => {
   const { title, createdAt } = blog;
   const BlogDate = new Date(createdAt);
-  const { axios } = useAppContext();
+  const { axios, fetchBlogs } = useAppContext();
 
   const togglePublish = async () => {
     try {
@@ -31,10 +31,13 @@ const BlogTableItem = ({ blog, onDeleteClick, index }) => {
       <td className="px-2 py-4 max-sm:hidden">
         <p
           className={`${
-            blog.isPublished ? "text-green-600" : "text-orange-700"
+            blog.isPublished ? "text-green-600 font-medium" : "text-amber-500 font-medium"
           }`}
         >
-          {blog.isPublished ? "Published" : "Unpublished"}
+          {blog.isPublished ? "Published" : "Draft"}
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          {blog.isPrivate ? "Private 🔒" : "Public 🌍"}
         </p>
       </td>
       <td className="px-2 py-4 flex text-xs gap-3">

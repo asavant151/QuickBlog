@@ -7,16 +7,29 @@ import Footer from "../components/Footer";
 import Loader from "../components/Loader";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 const Blog = () => {
   const { id } = useParams();
 
-  const { axios } = useAppContext();
+  const { axios, userProfile, bookmarks, setBookmarks } = useAppContext();
 
   const [data, setData] = useState(null);
   const [comments, setComments] = useState([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(userProfile?.name || "");
   const [content, setContent] = useState("");
+
+  const isBookmarked = bookmarks.includes(id);
+
+  const toggleBookmark = () => {
+    if (isBookmarked) {
+      setBookmarks(bookmarks.filter(bId => bId !== id));
+      toast.success("Removed from bookmarks");
+    } else {
+      setBookmarks([...bookmarks, id]);
+      toast.success("Added to bookmarks");
+    }
+  };
 
   const fetchBlogData = async () => {
     try {
@@ -46,6 +59,7 @@ const Blog = () => {
       const { data } = await axios.post("/api/blog/add-comment", {
         blog: id,
         name,
+        avatar: userProfile?.avatar || "",
         content,
       });
       if (data.success) {
@@ -74,6 +88,14 @@ const Blog = () => {
 
   return data ? (
     <div className="relative">
+      <Helmet>
+        <title>{data.title} - QuickBlog</title>
+        <meta name="description" content={data.subTitle} />
+        <meta property="og:title" content={data.title} />
+        <meta property="og:description" content={data.subTitle} />
+        <meta property="og:image" content={data.image} />
+      </Helmet>
+
       <img
         src={assets.gradientBackground}
         alt="gradientBackground"
@@ -111,7 +133,7 @@ const Blog = () => {
                 className="relative bg-primary/2 border border-primary/5 max-w-xl rounded text-gray-600"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <img src={assets.user_icon} alt="user" className="w-6" />
+                  <img src={item.avatar || assets.user_icon} alt="user" className="w-8 h-8 rounded-full object-cover border border-gray-200" onError={(e) => e.target.src = assets.user_icon} />
                   <p className="font-medium">{item.name}</p>
                 </div>
                 <p className="text-sm max-w-md ml-8">{item.content}</p>
@@ -157,13 +179,14 @@ const Blog = () => {
         </div>
 
         {/* Share Buttons */}
-        <div className="my-24 max-w-3xl mx-auto">
-          <p className="font-semibold my-4">
-            Share this article on social media
-          </p>
-          <div className="flex items-center gap-4">
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(blogSlug)}`}
+        <div className="my-24 max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div>
+            <p className="font-semibold my-4">
+              Share this article on social media
+            </p>
+            <div className="flex items-center gap-4">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(blogSlug)}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -201,6 +224,13 @@ const Blog = () => {
               />
             </a>
           </div>
+          </div>
+          <button 
+            onClick={toggleBookmark}
+            className={`px-6 py-2.5 rounded-full font-medium transition-colors border flex items-center gap-2 ${isBookmarked ? 'bg-primary text-white border-primary' : 'bg-transparent text-primary border-primary hover:bg-primary/5'}`}
+          >
+            {isBookmarked ? 'Bookmarked ★' : 'Bookmark ☆'}
+          </button>
         </div>
       </div>
 

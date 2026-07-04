@@ -19,6 +19,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Messages from './pages/admin/Messages';
 import Subscribers from './pages/admin/Subscribers';
+import Bookmarks from './pages/Bookmarks';
+import UserLogin from "./pages/UserLogin";
+import UserRegister from "./pages/UserRegister";
+import UserProfile from "./pages/UserProfile";
 
 const App = () => {
 
@@ -34,8 +38,12 @@ const App = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faqs" element={<Faqs />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<TermsOfService />} />
+        <Route path='/privacy-policy' element={<PrivacyPolicy/>} />
+        <Route path='/terms-of-service' element={<TermsOfService/>} />
+        <Route path='/bookmarks' element={<Bookmarks/>} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/login" element={<UserLogin />} />
+        <Route path="/register" element={<UserRegister />} />
         <Route path="/admin" element={token ? <Layout /> : <Login />}>
           <Route index element={<Dashboard />} />
           <Route path="listBlog" element={<ListBlog />} />

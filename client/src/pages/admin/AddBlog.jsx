@@ -8,6 +8,7 @@ const AddBlog = () => {
 
   const {axios, fetchBlogs} = useAppContext();
   const [isAdding, setIsAdding] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
     const editorRef = useRef(null);
     const quillRef = useRef(null);
@@ -17,6 +18,7 @@ const AddBlog = () => {
     const [subTitle, setSubTitle] = useState('');
     const [category, setCategory] = useState('Startup');
     const [isPublished, setIsPublished] = useState(false);
+    const [isPrivate, setIsPrivate] = useState(false);
 
     const onSubmitHandler = async (e) => {
        try {
@@ -30,7 +32,8 @@ const AddBlog = () => {
           title, subTitle,
           description: quillRef.current.root.innerHTML,
           category,
-          isPublished
+          isPublished,
+          isPrivate
          }
 
          const formData = new FormData();
@@ -58,14 +61,58 @@ const AddBlog = () => {
     }
 
     useEffect(() => {
-       // Initiate Quill only once
        if(!quillRef.current && editorRef.current) {
+        
+        const imageHandler = () => {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+    
+            input.onchange = async () => {
+                const file = input.files[0];
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    
+                    const toastId = toast.loading("Uploading image...");
+                    try {
+                        const { data } = await axios.post('/api/blog/upload-image', formData);
+                        if (data.success) {
+                            const range = quillRef.current.getSelection(true);
+                            quillRef.current.insertEmbed(range.index, 'image', data.url);
+                            quillRef.current.setSelection(range.index + 1);
+                            toast.success("Image uploaded", { id: toastId });
+                        } else {
+                            toast.error(data.message, { id: toastId });
+                        }
+                    } catch (error) {
+                        toast.error(error.message, { id: toastId });
+                    }
+                }
+            };
+        };
+
         quillRef.current = new Quill(editorRef.current, {
             theme: 'snow',
             placeholder: 'Type here',
+            modules: {
+                toolbar: {
+                    container: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ],
+                    handlers: {
+                        image: imageHandler
+                    }
+                }
+            }
         })
        }
-    }, [editorRef])
+    }, [editorRef, axios])
 
   return (
     <form onSubmit={onSubmitHandler} className='flex-1 bg-blue-50/50 text-gray-600 h-full overflow-scroll'>
@@ -104,9 +151,34 @@ const AddBlog = () => {
             <p>Publish Now</p>
             <input type="checkbox" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} className='scale-125 cursor-pointer' />
         </div>
+        
+        <div className='flex gap-2 mt-4'>
+            <p>Private Blog (Requires Login)</p>
+            <input type="checkbox" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} className='scale-125 cursor-pointer' />
+        </div>
 
-        <button disabled={isAdding} type='submit' className='mt-8 w-40 h-10 bg-primary text-white rounded cursor-pointer text-sm'>{isAdding ? "Adding..." : "Add Blog"}</button>
+        <div className='flex gap-4 mt-8'>
+            <button disabled={isAdding} type='submit' className='w-40 h-10 bg-primary text-white rounded cursor-pointer text-sm'>{isAdding ? "Adding..." : "Add Blog"}</button>
+            <button type='button' onClick={() => setShowPreview(true)} className='w-40 h-10 border border-primary text-primary bg-white rounded cursor-pointer text-sm'>Preview</button>
+        </div>
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 md:p-10">
+              <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+                  <div className="sticky top-0 right-0 p-4 flex justify-end bg-white border-b border-gray-100 z-10">
+                      <button type="button" onClick={() => setShowPreview(false)} className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl font-bold">&times;</button>
+                  </div>
+                  <div className="p-8">
+                      <h1 className="text-4xl font-bold mb-4">{title || "Untitled Blog"}</h1>
+                      <h2 className="text-xl text-gray-600 mb-8">{subTitle || "Blog Subtitle will appear here"}</h2>
+                      {image && <img src={URL.createObjectURL(image)} alt="Preview" className="w-full rounded-2xl mb-8" />}
+                      <div className="rich-text" dangerouslySetInnerHTML={{__html: quillRef.current?.root.innerHTML || "<p>No content written yet...</p>"}}></div>
+                  </div>
+              </div>
+          </div>
+      )}
     </form>
   )
 }

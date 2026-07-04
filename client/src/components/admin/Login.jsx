@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
 
-    const { axios, setToken } = useAppContext();
+    const { axios, setToken, setRole } = useAppContext();
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -15,7 +15,9 @@ const Login = () => {
           const { data } = await axios.post("/api/admin/login", {email, password});
           if(data.success) {
             setToken(data.token);
+            setRole(data.role); // data.role is 'admin' from backend
             localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.role);
             axios.defaults.headers.common["Authorization"] = data.token;
             toast.success(data.message);
           } else {

@@ -6,11 +6,11 @@ import { useAppContext } from "../context/AppContext";
 
 const BlogList = () => {
   const [menu, setMenu] = useState("All");
-  const { blogs, input, fetchBlogs } = useAppContext();
+  const { blogs, input, fetchBlogs, currentPage, hasMore } = useAppContext();
 
   // Fetch latest blogs every time this page is visited
   useEffect(() => {
-    fetchBlogs();
+    fetchBlogs(1);
   }, []);
 
   const filteredBlogs = () => {
@@ -62,6 +62,17 @@ const BlogList = () => {
           </div>
         ) : (
           <p className="text-center text-gray-500">No blogs found</p>
+        )}
+
+        {hasMore && menu === "All" && input === "" && (
+            <div className="flex justify-center mt-12">
+                <button 
+                    onClick={() => fetchBlogs(currentPage + 1)}
+                    className="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                >
+                    Load More
+                </button>
+            </div>
         )}
       </div>
     </div>
