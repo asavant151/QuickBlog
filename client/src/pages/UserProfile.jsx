@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
 
 const UserProfile = () => {
-    const { userProfile, setUserProfile, axios, token } = useAppContext();
+    const { userProfile, setUserProfile, axios, token, role } = useAppContext();
     const [name, setName] = useState('');
     const [avatarPreview, setAvatarPreview] = useState('');
     const [imageFile, setImageFile] = useState(null);
@@ -74,22 +74,25 @@ const UserProfile = () => {
                     <form onSubmit={handleSave} className='flex flex-col gap-6'>
                         
                         <div className='flex flex-col items-center gap-4'>
-                            <label htmlFor="avatar-upload" className='cursor-pointer group relative'>
+                            <label htmlFor="avatar-upload" className={`cursor-pointer group relative ${role === 'admin' ? 'pointer-events-none' : ''}`}>
                                 <img 
                                     src={avatarPreview || assets.profile_icon} 
                                     alt="avatar" 
-                                    className='w-32 h-32 rounded-full object-cover border-4 border-gray-100 group-hover:border-primary transition-all shadow-sm'
+                                    className={`w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm transition-all ${role === 'admin' ? '' : 'group-hover:border-primary'}`}
                                     onError={(e) => e.target.src = assets.profile_icon}
                                 />
-                                <div className='absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
-                                    <span className='text-white text-sm font-medium'>Change Photo</span>
-                                </div>
+                                {role !== 'admin' && (
+                                    <div className='absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
+                                        <span className='text-white text-sm font-medium'>Change Photo</span>
+                                    </div>
+                                )}
                             </label>
                             <input 
                                 type="file" 
                                 id="avatar-upload" 
                                 className='hidden' 
                                 accept="image/*" 
+                                disabled={role === 'admin'}
                                 onChange={handleImageChange} 
                             />
                         </div>
@@ -101,17 +104,24 @@ const UserProfile = () => {
                                 value={name} 
                                 onChange={(e) => setName(e.target.value)} 
                                 required
-                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all'
+                                disabled={role === 'admin'}
+                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all disabled:bg-gray-100 disabled:text-gray-500'
                             />
                         </div>
 
-                        <button 
-                            type="submit" 
-                            disabled={isSaving}
-                            className='w-full py-3 mt-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium flex items-center justify-center'
-                        >
-                            {isSaving ? "Saving..." : "Save Profile"}
-                        </button>
+                        {role === 'admin' ? (
+                            <div className='w-full py-3 mt-4 bg-gray-200 text-gray-600 rounded-lg text-center font-medium'>
+                                Admin profile cannot be modified here.
+                            </div>
+                        ) : (
+                            <button 
+                                type="submit" 
+                                disabled={isSaving}
+                                className='w-full py-3 mt-4 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium flex items-center justify-center'
+                            >
+                                {isSaving ? "Saving..." : "Save Profile"}
+                            </button>
+                        )}
                     </form>
                 </div>
             </div>
